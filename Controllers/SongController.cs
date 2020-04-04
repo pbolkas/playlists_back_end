@@ -1,3 +1,4 @@
+using back_end.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 
@@ -12,5 +13,12 @@ namespace back_end.Controllers
     {
       _logger = logger;
     }
+
+    [HttpPost("addSong")]
+    public async AddSong([FromBody]AddSongModel song)
+    {
+      return Ok("added song");
+    }
+
   }
 }

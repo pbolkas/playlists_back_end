@@ -40,6 +40,13 @@ namespace back_end
 
             app.UseRouting();
 
+            app.UseSwagger();
+            app.UseSwaggerUI(option =>{
+                option.SwaggerEndpoint("/swagger/v1/swagger.json","Playlists API");
+                option.RoutePrefix = string.Empty;
+            });
+
+            app.UseAuthentication();
             app.UseAuthorization();
 
             app.UseEndpoints(endpoints =>
