@@ -1,3 +1,4 @@
+using System.Threading.Tasks;
 using back_end.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
@@ -15,7 +16,7 @@ namespace back_end.Controllers
     }
 
     [HttpPost("addSong")]
-    public async AddSong([FromBody]AddSongModel song)
+    public async Task<ActionResult> AddSong([FromBody]AddSongModel song)
     {
       return Ok("added song");
     }
