@@ -1,14 +1,19 @@
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Logging;
 
-namespace Controllers.PlaylistsController
+namespace back_end.Controllers
 {
   [Route("api/[controller]")]
   [ApiController]
   public class PlaylistsController :ControllerBase
   {
-    public PlaylistsController()
+    private readonly ILogger<PlaylistsController> _logger;
+    
+    public PlaylistsController(ILogger<PlaylistsController> logger)
     {
-      
+      _logger = logger;      
     }
+
+    
   }
 }
