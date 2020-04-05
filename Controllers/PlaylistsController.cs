@@ -18,7 +18,7 @@ namespace back_end.Controllers
       _logger = logger;      
     }
 
-    [HttpPost("create")]
+    [HttpPost]
     public async Task<ActionResult> CreatePlaylist([FromBody] CreatePlaylistModel playlist)
     {
       return Ok("Created playlist");
@@ -33,7 +33,20 @@ namespace back_end.Controllers
     [HttpGet("{id}")]
     public async Task<ActionResult> GetAPlaylist(string id)
     {
+      // returns a playlist and its song ids
       return Ok("Playlist");
+    }
+
+    [HttpPut]
+    public async Task<ActionResult> EditPlaylist([FromBody] EditPlaylistModel playlist)
+    {
+      return Ok("Edited playlist");
+    }
+
+    [HttpDelete("{id}")]
+    public async Task<ActionResult> RemovePlaylist(string id)
+    {
+      return Ok();
     }
     
   }

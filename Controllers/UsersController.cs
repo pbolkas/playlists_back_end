@@ -24,6 +24,7 @@ namespace back_end.Controllers
     [HttpPost("login")]
     public async Task<ActionResult> Login([FromBody]AuthenticateModel user)
     {
+      
       try{
         return Ok(new {user.Email,user.Password});
       }catch(Exception e)

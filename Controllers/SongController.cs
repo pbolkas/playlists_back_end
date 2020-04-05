@@ -15,10 +15,27 @@ namespace back_end.Controllers
       _logger = logger;
     }
 
-    [HttpPost("addSong")]
+    [HttpGet("{id}")]
+    public async Task<ActionResult> GetSong(string id){
+      return Ok("Get a song");
+    }
+
+    [HttpPost ]
     public async Task<ActionResult> AddSong([FromBody]AddSongModel song)
     {
       return Ok("added song");
+    }
+
+    [HttpPut]
+    public async Task<ActionResult> EditSongTitle([FromBody]EditSongModel song)
+    {
+      return Ok("Edited song title");
+    }
+
+    [HttpDelete("{id}")]
+    public async Task<ActionResult> RemoveSong(string id)
+    {
+      return Ok("removed the song");
     }
 
   }
