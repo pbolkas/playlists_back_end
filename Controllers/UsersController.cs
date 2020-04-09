@@ -22,6 +22,9 @@ namespace back_end.Controllers
 
     [AllowAnonymous]
     [HttpPost("login")]
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(StatusCodes.Status500InternalServerError)]
     public async Task<ActionResult> Login([FromBody]AuthenticateModel user)
     {
       
