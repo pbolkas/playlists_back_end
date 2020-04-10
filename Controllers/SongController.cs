@@ -1,5 +1,5 @@
 using System.Threading.Tasks;
-using back_end.Models;
+using back_end.Contracts.Requests.Song;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 
@@ -21,13 +21,13 @@ namespace back_end.Controllers
     }
 
     [HttpPost ]
-    public async Task<ActionResult> AddSong([FromBody]AddSongModel song)
+    public async Task<ActionResult> AddSong([FromBody]AddSongRequest song)
     {
       return Ok("added song");
     }
 
     [HttpPut]
-    public async Task<ActionResult> EditSongTitle([FromBody]EditSongModel song)
+    public async Task<ActionResult> EditSongTitle([FromBody]EditSongRequest song)
     {
       return Ok("Edited song title");
     }

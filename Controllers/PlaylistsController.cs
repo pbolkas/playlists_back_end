@@ -1,5 +1,5 @@
 using System.Threading.Tasks;
-using back_end.Models;
+using back_end.Contracts.Requests.Playlist;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
@@ -19,7 +19,7 @@ namespace back_end.Controllers
     }
 
     [HttpPost]
-    public async Task<ActionResult> CreatePlaylist([FromBody] CreatePlaylistModel playlist)
+    public async Task<ActionResult> CreatePlaylist([FromBody] AddPlaylistRequest playlist)
     {
       return Ok("Created playlist");
     }
@@ -38,7 +38,7 @@ namespace back_end.Controllers
     }
 
     [HttpPut]
-    public async Task<ActionResult> EditPlaylist([FromBody] EditPlaylistModel playlist)
+    public async Task<ActionResult> EditPlaylist([FromBody] EditPlaylistRequest playlist)
     {
       return Ok("Edited playlist");
     }

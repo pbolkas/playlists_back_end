@@ -1,8 +1,8 @@
 using System.ComponentModel.DataAnnotations;
 
-namespace back_end.Models
+namespace back_end.Contracts.Requests.User
 {
-  public class SubscriptionModel
+  public class UserSubscribeRequest
   {
     [Required]
     public string Username {get;set;}

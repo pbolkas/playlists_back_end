@@ -1,12 +1,10 @@
 using System;
-using System.Collections.Generic;
-using System.Linq;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Authorization;
 using System.Threading.Tasks;
-using back_end.Models;
 using Microsoft.Extensions.Logging;
+using back_end.Contracts.Requests.User;
 
 namespace back_end.Controllers
 {
@@ -25,11 +23,11 @@ namespace back_end.Controllers
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-    public async Task<ActionResult> Login([FromBody]AuthenticateModel user)
+    public async Task<ActionResult> Login([FromBody]AuthenticateRequest user)
     {
       
       try{
-        return Ok(new {user.Email,user.Password});
+        return Ok(new {user.Username,user.Password});
       }catch(Exception e)
       {
         _logger.LogCritical("Exception ",e.Message);
@@ -39,7 +37,7 @@ namespace back_end.Controllers
 
     [AllowAnonymous]
     [HttpPost("subscribe")]
-    public async Task<ActionResult> Subscribe([FromBody] SubscriptionModel user)
+    public async Task<ActionResult> Subscribe([FromBody] UserSubscribeRequest user)
     {
       return Ok("Created");
     }

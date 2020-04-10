@@ -1,13 +1,12 @@
 using System.ComponentModel.DataAnnotations;
 
-namespace back_end.Models
+namespace back_end.Contracts.Requests.Playlist
 {
-  public class EditPlaylistModel
+  public class EditPlaylistRequest
   {
     [Required]
     public string PlaylistId {get;set;}
     [Required]
     public string NewPlaylistTitle{get;set;}
-    
   }
 }
