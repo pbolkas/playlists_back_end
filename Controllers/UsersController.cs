@@ -7,6 +7,7 @@ using Microsoft.Extensions.Logging;
 using back_end.Contracts.Requests.User;
 using back_end.Helpers;
 using back_end.Services;
+using back_end.Contracts.Responses.User;
 
 namespace back_end.Controllers
 {
@@ -27,14 +28,13 @@ namespace back_end.Controllers
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-    public async Task<ActionResult> Login([FromBody]AuthenticateRequest user)
+    public async Task<ActionResult> Login([FromBody]AuthenticateRequest UserCredentials)
     {
       
       try{
 
+        return Ok(new AuthenticateResponse{Token="blabla",Username="PBolkas"});
         
-
-        return Ok(new {user.Username,user.Password});
       }catch(Exception e)
       {
         _logger.LogCritical("Exception ",e.Message);
