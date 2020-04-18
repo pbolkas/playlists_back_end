@@ -1,5 +1,8 @@
 using System;
+using System.IdentityModel.Tokens.Jwt;
 using System.Linq;
+using System.Security.Claims;
+using System.Text;
 using System.Threading.Tasks;
 using back_end.Entities;
 using back_end.Helpers;
@@ -7,6 +10,7 @@ using back_end.Models;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
+using Microsoft.IdentityModel.Tokens;
 using bcrypt = BCrypt.Net.BCrypt;
 
 namespace back_end.Services
@@ -41,7 +45,19 @@ namespace back_end.Services
 
         if(!passwordIsCorrect) return null;
 
-        return new User{Username = username, Email = user.Email};
+        var tokenHandler = new JwtSecurityTokenHandler();
+        var key = Encoding.ASCII.GetBytes(_appSettings.Secret);
+        var tokenDescriptor = new SecurityTokenDescriptor{
+          Subject =new ClaimsIdentity(new Claim[]{
+            new Claim(ClaimTypes.Role, user.Role),
+            new Claim("username",user.Username)
+          }),
+          Expires = DateTime.UtcNow.AddHours(9),
+          SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(key),SecurityAlgorithms.HmacSha256Signature)
+        };
+        var token = tokenHandler.CreateToken(tokenDescriptor);
+
+        return new User{Username = username, Email = user.Email, Token = tokenHandler.WriteToken(token)};
 
       }catch(Exception e){
         _logger.LogCritical($"Exception during authentication {e.Message}");

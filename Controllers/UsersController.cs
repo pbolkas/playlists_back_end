@@ -39,7 +39,7 @@ namespace back_end.Controllers
 
         var u = await _userService.Authenticate(UserCredentials.Username, UserCredentials.Password);
 
-        return Ok(new AuthenticateResponse{Token="blabla",Username="PBolkas"});
+        return Ok(new AuthenticateResponse{Token=u.Token,Username=u.Username});
         
       }catch(Exception e)
       {

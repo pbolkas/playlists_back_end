@@ -10,7 +10,7 @@ namespace back_end.Install_Services
     public void InstallServices(IServiceCollection services, IConfiguration configuration)
     {
       services.AddDbContext<MySQLContext>(options =>
-            options.UseMySql("server=172.19.0.2;user=user;password=password;port=3306;database=playlists;",x => x.ServerVersion("5.7.0-mysql")));
+            options.UseMySql("",x => x.ServerVersion("5.7.0-mysql")));
     }
   }
 }
