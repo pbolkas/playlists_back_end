@@ -8,6 +8,8 @@ using back_end.Contracts.Requests.User;
 using back_end.Helpers;
 using back_end.Services;
 using back_end.Contracts.Responses.User;
+using back_end.Models;
+using back_end.Entities;
 
 namespace back_end.Controllers
 {
@@ -17,9 +19,11 @@ namespace back_end.Controllers
   {
     private readonly ILogger<UsersController> _logger;
     private readonly IUserService _userService;
-    public UsersController(IUserService service, ILogger<UsersController> logger)
+    private readonly MySQLContext _context;
+    public UsersController(IUserService service, MySQLContext context, ILogger<UsersController> logger)
     {
       _userService = service;
+      _context = context;
       _logger = logger;
     }
 
@@ -33,11 +37,13 @@ namespace back_end.Controllers
       
       try{
 
+        var u = await _userService.Authenticate(UserCredentials.Username, UserCredentials.Password);
+
         return Ok(new AuthenticateResponse{Token="blabla",Username="PBolkas"});
         
       }catch(Exception e)
       {
-        _logger.LogCritical("Exception ",e.Message);
+        _logger.LogCritical($"Exception {e.Message}");
         return StatusCode(500);
       }
     }
@@ -46,7 +52,14 @@ namespace back_end.Controllers
     [HttpPost("subscribe")]
     public async Task<ActionResult> Subscribe([FromBody] UserSubscribeRequest user)
     {
-      return Ok("Created");
+      try{
+        var newUser = await _userService.Register(new User{Username = user.Username,Email=user.Email, Password= user.Password});
+        
+        return Ok("Created");        
+      }catch(Exception e){
+        _logger.LogCritical($"Exception {e.Message}");
+        return StatusCode(500);
+      }
     }
 
     [HttpPut("password")]

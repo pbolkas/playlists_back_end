@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using back_end.Install_Services;
+using back_end.Services;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.HttpsPolicy;
@@ -30,6 +31,8 @@ namespace back_end
             services.AddCors();
 
             services.InstallServicesInAssembly(Configuration);
+
+            services.AddScoped<IUserService, UserService>();
 
         }
 

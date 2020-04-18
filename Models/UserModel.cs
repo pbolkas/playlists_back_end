@@ -5,7 +5,8 @@ using System.ComponentModel.DataAnnotations.Schema;
 namespace back_end.Models
 {
   // The Model Which will be used for the Database
-  public class User
+  [Table("users")]
+  public class UserModel
   {
     [Required]
     [Key]
@@ -14,7 +15,7 @@ namespace back_end.Models
     
     // This is the id which maps to the user's playlist
     [Required]
-    [Column("user_id",TypeName = "varchar(30)")]
+    [Column("user_id",TypeName = "varchar(255)")]
     public Guid UserId {get;set;}
     
     [Required]
@@ -29,5 +30,9 @@ namespace back_end.Models
     [Required]
     [Column("hash",TypeName = "varchar(255)")]
     public string Hash {get;set;}
+
+    [Required]
+    [Column("role",TypeName = "varchar(25)")]
+    public string Role{get;set;}
   }
 }
