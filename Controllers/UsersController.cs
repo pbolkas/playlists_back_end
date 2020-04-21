@@ -10,6 +10,7 @@ using back_end.Services;
 using back_end.Contracts.Responses.User;
 using back_end.Models;
 using back_end.Entities;
+using back_end.Contracts.Responses.Errors;
 
 namespace back_end.Controllers
 {
@@ -55,7 +56,12 @@ namespace back_end.Controllers
       try{
         var newUser = await _userService.Register(new User{Username = user.Username,Email=user.Email, Password= user.Password});
         
-        return Ok("Created");        
+        if(newUser == null) return BadRequest(new Error{ ErrorDescription = "Something went wrong. Please try again"});
+
+        return Ok(new {
+          Username = user.Username,
+          Email = user.Email,
+        }); 
       }catch(Exception e){
         _logger.LogCritical($"Exception {e.Message}");
         return StatusCode(500);
@@ -63,9 +69,20 @@ namespace back_end.Controllers
     }
 
     [HttpPut("password")]
-    public async Task<ActionResult> ChangePassword([FromBody] UserUpdatePasswordRequest user)
+    public async Task<ActionResult> ChangePassword([FromBody] UserUpdatePasswordRequest passwordObject)
     {
-      return Ok("Changed Password");
+      try{
+        var result = await _userService.UpdatePassword(passwordObject.NewPassword,passwordObject.NewPasswordValidation);
+        
+        if(result==null) return BadRequest(new Error{ErrorDescription="The given password can not be used, please try again"});
+
+        return Ok(new UserUpdatePasswordResponse{Details="Successfully changed password"});
+      }
+      catch(Exception e)
+      {
+        _logger.LogCritical($"Exception {e.Message}");
+        return StatusCode(500);
+      }
     }
 
     [HttpPut("username")]

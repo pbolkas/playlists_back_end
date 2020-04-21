@@ -19,7 +19,9 @@ namespace back_end.Services
   {
     Task<User> Authenticate(string username,string password);
     Task<User> Register(User u);
-    
+    Task<User> UpdatePassword(string newPassword1,string newPassword2);
+    Task<User> UpdateUsername(string newUsername);
+    Task<User> RemoveUser(string username);
   }
 
   public class UserService : IUserService
@@ -88,5 +90,23 @@ namespace back_end.Services
         return null;
       }
     }
+
+    public async Task<User> RemoveUser(string username)
+    {
+      throw new NotImplementedException();
+    }
+
+    public async Task<User> UpdatePassword(string newPassword1, string newPassword2)
+    {
+      throw new NotImplementedException();
+    }
+
+    public async Task<User> UpdateUsername(string newUsername)
+    {
+      throw new NotImplementedException();
+    }
+
+    
   }
+  
 }
