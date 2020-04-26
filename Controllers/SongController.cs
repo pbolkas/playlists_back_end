@@ -1,5 +1,6 @@
 using System.Threading.Tasks;
 using back_end.Contracts.Requests.Song;
+using back_end.Services;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 
@@ -9,9 +10,11 @@ namespace back_end.Controllers
   [Route("api/[controller]")]
   public class SongController:ControllerBase
   {
+    private readonly SongService _songService;
     private readonly ILogger<SongController> _logger;
-    public SongController(ILogger<SongController> logger)
+    public SongController(SongService service, ILogger<SongController> logger)
     {
+      _songService = service;
       _logger = logger;
     }
 

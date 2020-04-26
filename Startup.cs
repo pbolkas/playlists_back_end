@@ -33,6 +33,8 @@ namespace back_end
             services.InstallServicesInAssembly(Configuration);
 
             services.AddScoped<IUserService, UserService>();
+            services.AddScoped<IPlaylistService, PlaylistService>();
+            services.AddScoped<ISongService, SongService>();
 
         }
 

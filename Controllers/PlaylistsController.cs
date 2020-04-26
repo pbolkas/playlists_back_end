@@ -1,5 +1,6 @@
 using System.Threading.Tasks;
 using back_end.Contracts.Requests.Playlist;
+using back_end.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
@@ -11,11 +12,13 @@ namespace back_end.Controllers
   [ApiController]
   public class PlaylistsController :ControllerBase
   {
+    private readonly PlaylistService _playlistService;
     private readonly ILogger<PlaylistsController> _logger;
     
-    public PlaylistsController(ILogger<PlaylistsController> logger)
+    public PlaylistsController(PlaylistService service, ILogger<PlaylistsController> logger)
     {
-      _logger = logger;      
+      _playlistService = service;
+      _logger = logger;
     }
 
     [HttpPost]

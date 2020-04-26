@@ -4,6 +4,7 @@ using System.Threading.Tasks;
 using back_end.Entities;
 using back_end.Helpers;
 using Microsoft.Extensions.Logging;
+using MongoDB.Driver;
 
 namespace back_end.Services
 {
@@ -12,17 +13,18 @@ namespace back_end.Services
     Task<Playlist> AddPlaylist(string title);
     Task<Playlist> EditPlaylistName(string newTitle, Guid playlistId);
     Task<Playlist> GetPlaylist(string title, Guid playlistID);
-    Task<IEnumerable<Playlist>> GetAllPlaylists();
+    Task<IEnumerable<Playlist>> GetAllPlaylists(Guid ownerID);
     Task<bool> RemovePlaylist(Guid playlistID);
   }
   public class PlaylistService : IPlaylistService
   {
-    // private readonly MongoContext _context;
+    private readonly IMongoCollection<Playlist> _playlists;
     private readonly AppSettings _appSettings;
     private readonly ILogger<PlaylistService> _logger;
 
-    public PlaylistService(AppSettings appSettings, ILogger<PlaylistService> logger)
+    public PlaylistService(IMongoCollection<Playlist> playlists, AppSettings appSettings, ILogger<PlaylistService> logger)
     {
+      _playlists = playlists;
       _logger = logger;
       _appSettings = appSettings;
     }
@@ -37,14 +39,17 @@ namespace back_end.Services
       throw new NotImplementedException();
     }
 
-    public Task<IEnumerable<Playlist>> GetAllPlaylists()
+    public async Task<IEnumerable<Playlist>> GetAllPlaylists(Guid ownerID)
     {
-      throw new NotImplementedException();
+      return await _playlists.Find(playlist => playlist.OwnerGuiID.Equals(ownerID)).ToListAsync();
     }
 
-    public Task<Playlist> GetPlaylist(string title, Guid playlistID)
+    public async Task<Playlist> GetPlaylist(string title, Guid ownerID)
     {
-      throw new NotImplementedException();
+      return await _playlists.Find<Playlist>(playlist =>
+       playlist.PlaylistTitle == title 
+       && ownerID.Equals(playlist.OwnerGuiID))
+       .FirstOrDefaultAsync();
     }
 
     public Task<bool> RemovePlaylist(Guid playlistID)
