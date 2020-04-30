@@ -10,7 +10,7 @@ namespace back_end.Services
 {
   public interface IPlaylistService
   {
-    Task<Playlist> AddPlaylist(string title);
+    Task<Playlist> AddPlaylist(string title, Guid ownerID);
     Task<Playlist> EditPlaylistName(string newTitle, Guid playlistId);
     Task<Playlist> GetPlaylist(string title, Guid playlistID);
     Task<IEnumerable<Playlist>> GetAllPlaylists(Guid ownerID);
@@ -22,16 +22,18 @@ namespace back_end.Services
     private readonly AppSettings _appSettings;
     private readonly ILogger<PlaylistService> _logger;
 
-    public PlaylistService(IMongoCollection<Playlist> playlists, AppSettings appSettings, ILogger<PlaylistService> logger)
+    public PlaylistService(ILogger<PlaylistService> logger)
     {
-      _playlists = playlists;
+      
       _logger = logger;
-      _appSettings = appSettings;
     }
 
-    public Task<Playlist> AddPlaylist(string title)
+    public async Task<Playlist> AddPlaylist(string title, Guid ownerID)
     {
-      throw new NotImplementedException();
+      Playlist playlist = new Playlist{GUID = new Guid(), OwnerGuiID = ownerID, PlaylistTitle = title};
+      await _playlists.InsertOneAsync(playlist);
+
+      return playlist;
     }
 
     public Task<Playlist> EditPlaylistName(string newTitle, Guid playlistId)

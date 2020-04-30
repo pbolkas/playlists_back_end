@@ -24,6 +24,7 @@ namespace back_end.Controllers
     [HttpPost]
     public async Task<ActionResult> CreatePlaylist([FromBody] AddPlaylistRequest playlist)
     {
+      
       return Ok("Created playlist");
     }
 

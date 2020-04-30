@@ -69,8 +69,10 @@ namespace back_end.Services
 
     public async Task<User> Register(User u)
     {
-      try{
-        _context.Users.Add(new UserModel{
+      try
+      {
+        _context.Users.Add(
+          new UserModel{
           Email = u.Email,
           Username = u.Username,
           Hash = bcrypt.HashPassword(u.Password, workFactor:12),
@@ -80,11 +82,13 @@ namespace back_end.Services
         await _context.SaveChangesAsync();
         u.Password = "";
         return u;
-      }catch(DbUpdateException e)
+      }
+      catch(DbUpdateException e)
       {
         _logger.LogCritical($"DB Exception on user register -> {e.Message}");
         return null;
-      }catch(Exception e)
+      }
+      catch(Exception e)
       {
         _logger.LogCritical($"Exception on user register -> {e.Message}");
         return null;
