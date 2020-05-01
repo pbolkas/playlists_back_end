@@ -2,56 +2,80 @@ using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using back_end.Entities;
-using back_end.Helpers;
+using back_end.Models;
 using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Options;
 using MongoDB.Driver;
 
 namespace back_end.Services
 {
   public interface IPlaylistService
   {
-    Task<Playlist> AddPlaylist(string title, Guid ownerID);
+    Task<PlaylistModel> AddPlaylist(string title, Guid ownerID);
     Task<Playlist> EditPlaylistName(string newTitle, Guid playlistId);
     Task<Playlist> GetPlaylist(string title, Guid playlistID);
-    Task<IEnumerable<Playlist>> GetAllPlaylists(Guid ownerID);
     Task<bool> RemovePlaylist(Guid playlistID);
+    Task<IEnumerable<Playlist>> GetAllPlaylistsOfUser(Guid ownerID);
   }
   public class PlaylistService : IPlaylistService
   {
-    private readonly IMongoCollection<Playlist> _playlists;
-    private readonly AppSettings _appSettings;
+
+    private const string collectionName = "playlists";
+    private readonly MongoDBCRUD _context;
     private readonly ILogger<PlaylistService> _logger;
 
-    public PlaylistService(ILogger<PlaylistService> logger)
+    public PlaylistService(IOptions<MongoDBSettings> settings,ILogger<PlaylistService> logger)
     {
-      
+      _context = new MongoDBCRUD(settings);
       _logger = logger;
     }
 
-    public async Task<Playlist> AddPlaylist(string title, Guid ownerID)
+    public async Task<PlaylistModel> AddPlaylist(string title, Guid ownerID)
     {
-      Playlist playlist = new Playlist{GUID = new Guid(), OwnerGuiID = ownerID, PlaylistTitle = title};
-      await _playlists.InsertOneAsync(playlist);
+      try{
+        PlaylistModel playlist = new PlaylistModel{PlaylistId = new Guid(), OwnerId = ownerID, Title = title};
+        
+        await _context.InsertRecord<PlaylistModel>(collectionName,playlist);
 
-      return playlist;
+        return playlist;
+        
+      }catch(MongoClientException e)
+      {
+        _logger.LogCritical($"Mongo exception {e.Message}");
+        return null;
+      }catch(Exception e)
+      {
+        _logger.LogCritical($"General exception {e.Message}");
+        return null;
+      }
+    }
+    public async Task<IEnumerable<Playlist>> GetAllPlaylistsOfUser(Guid ownerID)
+    {
+      var playlists = await _context.LoadRecords<PlaylistModel>(collectionName);
+
+      var userPlaylists = new List<Playlist>();
+      
+      foreach( var rec in playlists)
+      {
+        if(rec.OwnerId.Equals(ownerID))
+        {
+          userPlaylists.Add(new Playlist{
+            GUID = rec.PlaylistId,
+            PlaylistTitle = rec.Title
+          });
+        }
+      }
+      
+      return userPlaylists;
+    }
+    public async Task<Playlist> GetPlaylist(string title, Guid ownerID)
+    {
+      return await _context.LoadRecordById<Playlist>(collectionName,ownerID);
     }
 
     public Task<Playlist> EditPlaylistName(string newTitle, Guid playlistId)
     {
       throw new NotImplementedException();
-    }
-
-    public async Task<IEnumerable<Playlist>> GetAllPlaylists(Guid ownerID)
-    {
-      return await _playlists.Find(playlist => playlist.OwnerGuiID.Equals(ownerID)).ToListAsync();
-    }
-
-    public async Task<Playlist> GetPlaylist(string title, Guid ownerID)
-    {
-      return await _playlists.Find<Playlist>(playlist =>
-       playlist.PlaylistTitle == title 
-       && ownerID.Equals(playlist.OwnerGuiID))
-       .FirstOrDefaultAsync();
     }
 
     public Task<bool> RemovePlaylist(Guid playlistID)

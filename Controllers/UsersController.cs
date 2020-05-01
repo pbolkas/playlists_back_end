@@ -20,11 +20,9 @@ namespace back_end.Controllers
   {
     private readonly ILogger<UsersController> _logger;
     private readonly IUserService _userService;
-    private readonly MySQLContext _context;
-    public UsersController(IUserService service, MySQLContext context, ILogger<UsersController> logger)
+    public UsersController(IUserService service, ILogger<UsersController> logger)
     {
       _userService = service;
-      _context = context;
       _logger = logger;
     }
 
@@ -85,18 +83,18 @@ namespace back_end.Controllers
       }
     }
 
-    [HttpPut("username")]
-    public async Task<ActionResult> ChangeUsername([FromBody] UserUpdateUsernameRequest user)
-    {
-      return Ok("Changed Username");
-    }
+    // [HttpPut("username")]
+    // public Task<ActionResult> ChangeUsername([FromBody] UserUpdateUsernameRequest user)
+    // {
+    //   return Ok("Changed Username");
+    // }
 
-    [Authorize(Roles = Roles.Admin)]
-    [HttpDelete("{id}")]
-    public async Task<ActionResult> RemoveUser(string id)
-    {
-      return Ok("Removed user");
-    }
+    // [Authorize(Roles = Roles.Admin)]
+    // [HttpDelete("{id}")]
+    // public Task<ActionResult> RemoveUser(string id)
+    // {
+    //   return Ok("Removed user");
+    // }
     
   }
 }

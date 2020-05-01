@@ -52,7 +52,9 @@ namespace back_end.Services
         var tokenDescriptor = new SecurityTokenDescriptor{
           Subject =new ClaimsIdentity(new Claim[]{
             new Claim(ClaimTypes.Role, user.Role),
-            new Claim("username",user.Username)
+            new Claim("username",user.Username),
+            new Claim("uuid", user.UserId.ToString()),
+            new Claim("role", user.Role)
           }),
           Expires = DateTime.UtcNow.AddHours(9),
           SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(key),SecurityAlgorithms.HmacSha256Signature)
@@ -95,17 +97,17 @@ namespace back_end.Services
       }
     }
 
-    public async Task<User> RemoveUser(string username)
+    public Task<User> RemoveUser(string username)
     {
       throw new NotImplementedException();
     }
 
-    public async Task<User> UpdatePassword(string newPassword1, string newPassword2)
+    public Task<User> UpdatePassword(string newPassword1, string newPassword2)
     {
       throw new NotImplementedException();
     }
 
-    public async Task<User> UpdateUsername(string newUsername)
+    public Task<User> UpdateUsername(string newUsername)
     {
       throw new NotImplementedException();
     }
