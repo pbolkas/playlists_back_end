@@ -12,11 +12,11 @@ namespace back_end.Services
 {
   public interface IPlaylistService
   {
-    Task<PlaylistModel> AddPlaylist(string title, Guid ownerID);
+    Task<PlaylistModel> AddPlaylist(string title, Guid ownerId);
     Task<Playlist> EditPlaylistName(string newTitle, Guid ownerId, Guid playlistId);
     Task<Playlist> GetPlaylist(Guid ownerId, Guid playlistId);
-    Task<bool> RemovePlaylist(Guid ownerId, Guid playlistID);
-    Task<IEnumerable<Playlist>> GetAllPlaylistsOfUser(Guid ownerID);
+    Task<bool> RemovePlaylist(Guid ownerId, Guid playlistId);
+    Task<IEnumerable<Playlist>> GetAllPlaylistsOfUser(Guid ownerId);
   }
   public class PlaylistService : IPlaylistService
   {
@@ -31,10 +31,10 @@ namespace back_end.Services
       _logger = logger;
     }
 
-    public async Task<PlaylistModel> AddPlaylist(string title, Guid ownerID)
+    public async Task<PlaylistModel> AddPlaylist(string title, Guid ownerId)
     {
       try{
-        PlaylistModel playlist = new PlaylistModel{PlaylistId = new Guid(), OwnerId = ownerID, Title = title};
+        PlaylistModel playlist = new PlaylistModel{PlaylistId = new Guid(), OwnerId = ownerId, Title = title};
         
         await _context.InsertRecord<PlaylistModel>(collectionName,playlist);
 
@@ -50,7 +50,7 @@ namespace back_end.Services
         return null;
       }
     }
-    public async Task<IEnumerable<Playlist>> GetAllPlaylistsOfUser(Guid ownerID)
+    public async Task<IEnumerable<Playlist>> GetAllPlaylistsOfUser(Guid ownerId)
     {
       var playlists = await _context.LoadRecords<PlaylistModel>(collectionName);
 
@@ -58,7 +58,7 @@ namespace back_end.Services
       
       foreach( var rec in playlists)
       {
-        if(rec.OwnerId.Equals(ownerID))
+        if(rec.OwnerId.Equals(ownerId))
         {
           userPlaylists.Add(new Playlist{
             GUID = rec.PlaylistId,
@@ -100,11 +100,11 @@ namespace back_end.Services
       }
     }
 
-    public async Task<Playlist> GetPlaylist(Guid ownerID, Guid playlistId)
+    public async Task<Playlist> GetPlaylist(Guid ownerId, Guid playlistId)
     {
       try{
         var playlist = await _context.LoadRecordById<Playlist>(collectionName,playlistId);
-        if(playlist.OwnerGuiID.Equals(ownerID))
+        if(playlist.OwnerGuiID.Equals(ownerId))
         {
           return playlist;
         }else{
@@ -124,14 +124,14 @@ namespace back_end.Services
     }
 
 
-    public async Task<bool> RemovePlaylist(Guid ownerId, Guid playlistID)
+    public async Task<bool> RemovePlaylist(Guid ownerId, Guid playlistId)
     {
       try
       {
-        var playlist = await GetPlaylist(ownerId,playlistID);
+        var playlist = await GetPlaylist(ownerId,playlistId);
         if(playlist.OwnerGuiID.Equals(ownerId))
         {
-          await _context.DeleteRecord<Playlist>(collectionName,playlistID);
+          await _context.DeleteRecord<Playlist>(collectionName,playlistId);
         }
 
         return true;
