@@ -1,6 +1,8 @@
 using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using back_end.Contracts.Requests.Playlist;
+using back_end.Contracts.Responses.Playlist;
 using back_end.Extensions;
 using back_end.Services;
 using Microsoft.AspNetCore.Authorization;
@@ -42,14 +44,27 @@ namespace back_end.Controllers
     }
 
     [HttpGet]
-    public async Task<ActionResult> GetAllPlaylists()
+    public async Task<ActionResult<IEnumerable<GetPlaylistResponse>>> GetAllPlaylists()
     {
       try{
         var user_guid = HttpContext.GetUserUUID();
 
         var result = await _playlistService.GetAllPlaylistsOfUser(new Guid(user_guid));
+        
+        var playlists = new List<GetPlaylistResponse>();
 
-        return Ok(result);
+        foreach(var rec in result)
+        {
+          playlists.Add(
+            new GetPlaylistResponse{
+              GUID = rec.GUID,
+              PlaylistTitle = rec.PlaylistTitle,
+              SongIds = rec.SongIds
+            }
+          );
+        }
+
+        return Ok(playlists);
 
       }catch(Exception e)
       {
@@ -58,24 +73,59 @@ namespace back_end.Controllers
       }
     }
 
-    // [HttpGet("{id}")]
-    // public Task<ActionResult> GetAPlaylist(string id)
-    // {
-    //   // returns a playlist and its song ids
-    //   return Ok("Playlist");
-    // }
+    [HttpPut]
+    public async Task<ActionResult> EditPlaylist([FromBody] EditPlaylistRequest playlist)
+    {
+      try
+      {
 
-    // [HttpPut]
-    // public Task<ActionResult> EditPlaylist([FromBody] EditPlaylistRequest playlist)
-    // {
-    //   return Ok("Edited playlist");
-    // }
+        var user_guid = HttpContext.GetUserUUID();
 
-    // [HttpDelete("{id}")]
-    // public Task<ActionResult> RemovePlaylist(string id)
-    // {
-    //   return Ok();
-    // }
+        var result = await _playlistService.EditPlaylistName(playlist.NewPlaylistTitle,new Guid(user_guid),new Guid(playlist.PlaylistId));
+
+        return Ok(result);
+
+      }
+      catch(Exception e)
+      {
+        _logger.LogCritical($"Controller exception {e.Message}");
+        return StatusCode(500);
+      }
+    }
     
+    [HttpDelete("{id}")]
+    public async Task<ActionResult> RemovePlaylist(string id)
+    {
+      try
+      {
+        var user_guid = HttpContext.GetUserUUID();
+
+        var result = await _playlistService.RemovePlaylist(new Guid(user_guid),new Guid(id));
+
+        return Ok("Removed playlist");
+      }catch(Exception e)
+      {
+        _logger.LogCritical($"Exception {e.Message}");
+        return StatusCode(500);
+      }
+      
+    }
+
+    [HttpGet("{id}")]
+    public async Task<ActionResult> GetAPlaylist(string id)
+    {
+      try{
+        var user_guid = HttpContext.GetUserUUID();
+        var result = await _playlistService.GetPlaylist(new Guid(user_guid),new Guid(id));
+    
+        return Ok(result);
+      }
+      catch(Exception e)
+      {
+        _logger.LogCritical($"Exception {e.Message}");
+        return StatusCode(500);
+      }
+    }
+
   }
 }

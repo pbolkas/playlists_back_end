@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using back_end.Entities;
 using back_end.Models;
+using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using MongoDB.Driver;
@@ -12,9 +13,9 @@ namespace back_end.Services
   public interface IPlaylistService
   {
     Task<PlaylistModel> AddPlaylist(string title, Guid ownerID);
-    Task<Playlist> EditPlaylistName(string newTitle, Guid playlistId);
-    Task<Playlist> GetPlaylist(string title, Guid playlistID);
-    Task<bool> RemovePlaylist(Guid playlistID);
+    Task<Playlist> EditPlaylistName(string newTitle, Guid ownerId, Guid playlistId);
+    Task<Playlist> GetPlaylist(Guid ownerId, Guid playlistId);
+    Task<bool> RemovePlaylist(Guid ownerId, Guid playlistID);
     Task<IEnumerable<Playlist>> GetAllPlaylistsOfUser(Guid ownerID);
   }
   public class PlaylistService : IPlaylistService
@@ -39,7 +40,7 @@ namespace back_end.Services
 
         return playlist;
         
-      }catch(MongoClientException e)
+      }catch(MongoException e)
       {
         _logger.LogCritical($"Mongo exception {e.Message}");
         return null;
@@ -61,26 +62,90 @@ namespace back_end.Services
         {
           userPlaylists.Add(new Playlist{
             GUID = rec.PlaylistId,
-            PlaylistTitle = rec.Title
+            PlaylistTitle = rec.Title,
+            SongIds = rec.SongIds
           });
         }
       }
-      
       return userPlaylists;
-    }
-    public async Task<Playlist> GetPlaylist(string title, Guid ownerID)
+    }      
+    public async Task<Playlist> EditPlaylistName(string newTitle, Guid ownerId, Guid playlistId)
     {
-      return await _context.LoadRecordById<Playlist>(collectionName,ownerID);
+      try
+      {
+
+        var playlist = await _context.LoadRecordById<Playlist>(collectionName, playlistId);
+        if(playlist.OwnerGuiID.Equals(ownerId))
+        {
+          playlist.PlaylistTitle = newTitle;
+          await _context.UpsertRecord<Playlist>(collectionName,playlistId,playlist);
+          
+        }
+        else
+        {
+          return null;
+        }
+        return playlist;
+        
+      }
+      catch(MongoException e)
+      {
+        _logger.LogCritical($"Mongo exception {e.Message}");
+        return null;
+      }
+      catch(Exception e)
+      {
+        _logger.LogCritical($"General exception {e.Message}");
+        return null;
+      }
     }
 
-    public Task<Playlist> EditPlaylistName(string newTitle, Guid playlistId)
+    public async Task<Playlist> GetPlaylist(Guid ownerID, Guid playlistId)
     {
-      throw new NotImplementedException();
+      try{
+        var playlist = await _context.LoadRecordById<Playlist>(collectionName,playlistId);
+        if(playlist.OwnerGuiID.Equals(ownerID))
+        {
+          return playlist;
+        }else{
+          return null;
+        }
+      }
+      catch(MongoException e)
+      {
+        _logger.LogCritical($"Mongo exception {e.Message}");
+        return null;
+      }
+      catch(Exception e)
+      {
+        _logger.LogCritical($"General exception {e.Message}");
+        return null;
+      }
     }
 
-    public Task<bool> RemovePlaylist(Guid playlistID)
+
+    public async Task<bool> RemovePlaylist(Guid ownerId, Guid playlistID)
     {
-      throw new NotImplementedException();
+      try
+      {
+        var playlist = await GetPlaylist(ownerId,playlistID);
+        if(playlist.OwnerGuiID.Equals(ownerId))
+        {
+          await _context.DeleteRecord<Playlist>(collectionName,playlistID);
+        }
+
+        return true;
+      }
+      catch(MongoException e)
+      {
+        _logger.LogCritical($"Mongo Exception {e.Message}");
+        return false;
+      }
+      catch(Exception e)
+      {
+        _logger.LogCritical($"General Exception {e.Message}");
+        return false;
+      }
     }
   }
 }
