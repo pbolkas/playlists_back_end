@@ -5,8 +5,8 @@ namespace back_end.Contracts.Requests.Playlist
   public class EditPlaylistRequest
   {
     [Required]
-    public string PlaylistId {get;set;}
+    public string Id {get;set;}
     [Required]
-    public string NewPlaylistTitle{get;set;}
+    public string NewTitle{get;set;}
   }
 }

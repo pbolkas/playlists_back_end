@@ -32,9 +32,13 @@ namespace back_end.Controllers
 
         var user_guid = HttpContext.GetUserUUID();
 
-        var result = await _playlistService.AddPlaylist(playlist.PlaylistName, new Guid(user_guid));
+        var result = await _playlistService.AddPlaylist(playlist.Title, new Guid(user_guid));
         
-        return Ok("Created playlist");
+        return Ok(new AddPlaylistResponse{
+          Id = result.Id,
+          Title = result.Title,
+        });
+
       }catch(Exception e)
       {
         _logger.LogCritical($"Controler Exception ${e.Message}");
@@ -57,8 +61,8 @@ namespace back_end.Controllers
         {
           playlists.Add(
             new GetPlaylistResponse{
-              GUID = rec.GUID,
-              PlaylistTitle = rec.PlaylistTitle,
+              Id = rec.Id,
+              Title = rec.Title,
               SongIds = rec.SongIds
             }
           );
@@ -81,7 +85,7 @@ namespace back_end.Controllers
 
         var user_guid = HttpContext.GetUserUUID();
 
-        var result = await _playlistService.EditPlaylistName(playlist.NewPlaylistTitle,new Guid(user_guid),new Guid(playlist.PlaylistId));
+        var result = await _playlistService.EditPlaylistName(playlist.NewTitle,new Guid(user_guid),new Guid(playlist.Id));
 
         return Ok(result);
 

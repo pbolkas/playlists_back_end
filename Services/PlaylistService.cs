@@ -34,7 +34,7 @@ namespace back_end.Services
     public async Task<PlaylistModel> AddPlaylist(string title, Guid ownerId)
     {
       try{
-        PlaylistModel playlist = new PlaylistModel{PlaylistId = new Guid(), OwnerId = ownerId, Title = title};
+        PlaylistModel playlist = new PlaylistModel{Id = new Guid(), OwnerId = ownerId, Title = title};
         
         await _context.InsertRecord<PlaylistModel>(collectionName,playlist);
 
@@ -61,8 +61,8 @@ namespace back_end.Services
         if(rec.OwnerId.Equals(ownerId))
         {
           userPlaylists.Add(new Playlist{
-            GUID = rec.PlaylistId,
-            PlaylistTitle = rec.Title,
+            Id = rec.Id,
+            Title = rec.Title,
             SongIds = rec.SongIds
           });
         }
@@ -74,18 +74,22 @@ namespace back_end.Services
       try
       {
 
-        var playlist = await _context.LoadRecordById<Playlist>(collectionName, playlistId);
-        if(playlist.OwnerGuiID.Equals(ownerId))
+        var playlist = await _context.LoadRecordById<PlaylistModel>(collectionName, playlistId);
+        if(playlist.OwnerId.Equals(ownerId))
         {
-          playlist.PlaylistTitle = newTitle;
-          await _context.UpsertRecord<Playlist>(collectionName,playlistId,playlist);
-          
+          playlist.Title = newTitle;
+          var result = await _context.UpsertRecord<PlaylistModel>(collectionName,playlistId,playlist);
+          return new Playlist{
+            Id = result.Id,
+            OwnerId = result.OwnerId,
+            Title = result.Title,
+            SongIds = result.SongIds
+          };  
         }
         else
         {
           return null;
-        }
-        return playlist;
+        }      
         
       }
       catch(MongoException e)
@@ -103,10 +107,15 @@ namespace back_end.Services
     public async Task<Playlist> GetPlaylist(Guid ownerId, Guid playlistId)
     {
       try{
-        var playlist = await _context.LoadRecordById<Playlist>(collectionName,playlistId);
-        if(playlist.OwnerGuiID.Equals(ownerId))
+        var playlist = await _context.LoadRecordById<PlaylistModel>(collectionName,playlistId);
+        if(playlist.OwnerId.Equals(ownerId))
         {
-          return playlist;
+          return new Playlist{
+            Id = playlist.Id,
+            OwnerId = playlist.OwnerId,
+            Title = playlist.Title,
+            SongIds = playlist.SongIds
+          };
         }else{
           return null;
         }
@@ -123,15 +132,15 @@ namespace back_end.Services
       }
     }
 
-
     public async Task<bool> RemovePlaylist(Guid ownerId, Guid playlistId)
     {
       try
       {
+
         var playlist = await GetPlaylist(ownerId,playlistId);
-        if(playlist.OwnerGuiID.Equals(ownerId))
+        if(playlist.OwnerId.Equals(ownerId))
         {
-          await _context.DeleteRecord<Playlist>(collectionName,playlistId);
+          await _context.DeleteRecord<PlaylistModel>(collectionName,playlistId);
         }
 
         return true;
