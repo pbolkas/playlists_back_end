@@ -18,28 +18,28 @@ namespace back_end.Controllers
       _logger = logger;
     }
 
-    // [HttpGet("{id}")]
-    // public async Task<ActionResult> GetSong(string id){
-    //   return Ok("Get a song");
-    // }
+    [HttpGet]
+    public async Task<ActionResult> GetSong(GetSongRequest request){
+      return Ok("Get a song");
+    }
 
-    // [HttpPost ]
-    // public async Task<ActionResult> AddSong([FromBody]AddSongRequest song)
-    // {
-    //   return Ok("added song");
-    // }
+    [HttpPost ]
+    public async Task<ActionResult> AddSong([FromBody]AddSongRequest request)
+    {
+      return Ok("added song");
+    }
 
-    // [HttpPut]
-    // public async Task<ActionResult> EditSongTitle([FromBody]EditSongRequest song)
-    // {
-    //   return Ok("Edited song title");
-    // }
+    [HttpPut]
+    public async Task<ActionResult> EditSongTitle([FromBody]EditSongRequest request)
+    {
+      return Ok("Edited song title");
+    }
 
-    // [HttpDelete("{id}")]
-    // public async Task<ActionResult> RemoveSong(string id)
-    // {
-    //   return Ok("removed the song");
-    // }
+    [HttpDelete]
+    public async Task<ActionResult> RemoveSong(RemoveSongRequest request)
+    {
+      return Ok("removed the song");
+    }
 
   }
 }
