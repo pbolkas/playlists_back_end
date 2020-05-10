@@ -1,12 +1,13 @@
 using System;
 using Microsoft.AspNetCore.Http;
+using MongoDB.Bson;
 
 namespace back_end.Entities
 {
   public class Song
   {
-    public Guid GUID{get;set;}
+    public ObjectId Id{get;set;}
     public string SongTitle{get;set;}
-    public IFormFile SongBytes{get;set;}
+    public byte [] SongBytes{get;set;}
   }
 }
