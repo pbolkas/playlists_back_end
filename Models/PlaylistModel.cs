@@ -10,6 +10,6 @@ namespace back_end.Models
     public Guid Id {get;set;}
     public Guid OwnerId {get;set;}
     public string Title {get;set;}
-    public IEnumerable<Guid> SongIds{get;set;}
+    public IEnumerable<string> SongIds{get;set;}
   }
 }

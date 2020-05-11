@@ -32,7 +32,9 @@ namespace back_end.Services
     {
       try
       {
-        await _context.storeFileAsync(s.SongTitle, s.SongBytes);
+        var songId = await _context.StoreFileAsync(s.SongTitle, s.SongBytes,null);
+        s.Id= songId;
+
         return s;
       }
       catch(Exception e)
@@ -45,9 +47,13 @@ namespace back_end.Services
     {
       try
       {
-        var song =  await _context.retrieveFileAsync(new ObjectId("5eb824294e592e629f53c839"));
+        var songInfo = await _context.FindFileInfoAsync(new ObjectId(id));
+        
+        var song =  await _context.RetrieveFileAsync(new ObjectId(id));
+
         return new Song{
-          SongBytes = song
+          SongBytes = song,
+          SongTitle = songInfo.Filename
         };
       }
       catch(Exception e)

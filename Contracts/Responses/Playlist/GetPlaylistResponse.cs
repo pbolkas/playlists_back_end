@@ -8,7 +8,7 @@ namespace back_end.Contracts.Responses.Playlist
 
     public Guid Id {get;set;}
     public string Title {get;set;}
-    public IEnumerable<Guid> SongIds {get;set;} 
+    public IEnumerable<string> SongIds {get;set;} 
 
   }
 }

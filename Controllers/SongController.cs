@@ -27,6 +27,9 @@ namespace back_end.Controllers
     public async Task<ActionResult> GetSong(string songId){
       try
       {
+        // TODO: remove this
+        songId = "5eb824294e592e629f53c839";
+        
         var song = await _songService.GetSongAsync(songId);
 
         return File(song.SongBytes, "application/octet-stream","a.mp3");
