@@ -2,10 +2,10 @@ using System;
 using System.IO;
 using System.Threading.Tasks;
 using back_end.Contracts.Requests.Song;
+using back_end.Contracts.Responses.Errors;
 using back_end.Contracts.Responses.Song;
 using back_end.Entities;
 using back_end.Services;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 
@@ -28,11 +28,11 @@ namespace back_end.Controllers
       try
       {
         // TODO: remove this
-        songId = "5eb824294e592e629f53c839";
+        songId = "5eb81f926b5b2659d790aca0";
         
         var song = await _songService.GetSongAsync(songId);
 
-        return File(song.SongBytes, "application/octet-stream","a.mp3");
+        return Ok(File(song.SongBytes, "application/octet-stream",$"{song.SongTitle}.mp3"));
       }
       catch(Exception e)
       {
@@ -44,19 +44,20 @@ namespace back_end.Controllers
     [HttpPost]
     public async Task<ActionResult> AddSong([FromForm]AddSongRequest request)
     {
-      try{
+      try
+      {
         var ms = new MemoryStream();
         request.SongBytes.CopyTo(ms);
         var bytes = ms.ToArray();
 
         // first add song to gridfs
-        await _songService.AddSong(new Song{
+        await _songService.AddSongAsync(new Song{
           SongBytes= bytes,
           SongTitle = request.SongTitle,
         });
 
-        // then write guid of song to the equivalent playlist
-
+        // TODO: then write object id of song to the equivalent playlist
+        
         return Ok(new AddSongResponse{
           result = $"Added Song {request.SongTitle} Successfully"
         });
@@ -69,14 +70,31 @@ namespace back_end.Controllers
     }
 
     [HttpPut]
-    public async Task<ActionResult> EditSongTitle([FromBody]EditSongRequest request)
+    public async Task<ActionResult> EditSongTitle([FromBody]EditSongTitleRequest request)
     {
       try
       {
-        return Ok("Edited a song");
+        var result = await _songService.EditSongTitleAsync(
+          new Song{
+            SongTitle = request.NewTitle
+          });
+
+        if(!result)
+        {
+          return BadRequest( new Error{
+            ErrorDescription = "Could not edit song title"
+          });
+        }
+
+        return Ok(
+          new EditSongTitleResponse{
+          NewTitle = request.NewTitle,
+          SongId = request.SongId
+        });
       }
       catch(Exception e)
       {
+        _logger.LogCritical($"Exception on song edit title controller {e.Message}");
         return StatusCode(500);
       }
     }
@@ -86,10 +104,22 @@ namespace back_end.Controllers
     {
       try
       {
-        return Ok("Removed a song");
+        var result = await _songService.RemoveSongAsync(request.PlaylistId);
+
+        if(!result)
+        {
+          return BadRequest( new Error{
+            ErrorDescription = "Could not remove song"
+          });
+        }
+
+        return  Ok(new RemoveSongResponse{
+          Details = "Successfully removed song"
+        });
       }
       catch(Exception e)
       {
+        _logger.LogCritical($"Exception on song remove controller {e.Message}");
         return StatusCode(500);
       }
     }

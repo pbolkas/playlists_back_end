@@ -6,7 +6,7 @@ namespace back_end.Entities
 {
   public class Song
   {
-    public ObjectId Id{get;set;}
+    public string Id{get;set;}
     public string SongTitle{get;set;}
     public byte [] SongBytes{get;set;}
   }

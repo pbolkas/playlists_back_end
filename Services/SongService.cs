@@ -1,7 +1,6 @@
 using System;
 using System.Threading.Tasks;
 using back_end.Entities;
-using back_end.Helpers;
 using back_end.Models;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
@@ -11,10 +10,10 @@ namespace back_end.Services
 {
   public interface ISongService
   {
-    Task<Song> AddSong(Song s);
-    Task EditSong(Song s);
+    Task<Song> AddSongAsync(Song s);
+    Task<bool> EditSongTitleAsync(Song s);
     Task<Song> GetSongAsync(string id);
-    Task RemoveSong();
+    Task<bool> RemoveSongAsync(string id);
   }
 
   public class SongService : ISongService
@@ -28,12 +27,12 @@ namespace back_end.Services
       _logger = logger;
     }
 
-    public async Task<Song> AddSong(Song s)
+    public async Task<Song> AddSongAsync(Song s)
     {
       try
       {
         var songId = await _context.StoreFileAsync(s.SongTitle, s.SongBytes,null);
-        s.Id= songId;
+        s.Id= songId.ToString();
 
         return s;
       }
@@ -47,9 +46,9 @@ namespace back_end.Services
     {
       try
       {
-        var songInfo = await _context.FindFileInfoAsync(new ObjectId(id));
+        var songInfo = await _context.FindFileInfoAsync(id);
         
-        var song =  await _context.RetrieveFileAsync(new ObjectId(id));
+        var song =  await _context.RetrieveFileAsync(id);
 
         return new Song{
           SongBytes = song,
@@ -63,15 +62,35 @@ namespace back_end.Services
       }
     }
 
-    public Task EditSong(Song s)
+    public async Task<bool> EditSongTitleAsync(Song s)
     {
-      throw new System.NotImplementedException();
+      try
+      {
+        var result = await _context.EditFileNameAsync(s.Id,s.SongTitle);
+
+        return result;
+      }
+      catch(Exception e)
+      {
+        _logger.LogCritical($"General exception on song edit title {e.Message}");
+        return false;
+      }
     }
 
 
-    public Task RemoveSong()
+    public async Task<bool> RemoveSongAsync(string id)
     {
-      throw new System.NotImplementedException();
+      try
+      {
+        var result = await _context.RemoveFileAsync(id);
+        
+        return result;
+      }
+      catch(Exception e)
+      {
+        _logger.LogCritical($"General exception on song edit title {e.Message}");
+        return false;
+      }
     }
   }
 }
