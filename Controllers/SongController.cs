@@ -6,11 +6,13 @@ using back_end.Contracts.Responses.Errors;
 using back_end.Contracts.Responses.Song;
 using back_end.Entities;
 using back_end.Services;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 
 namespace back_end.Controllers
 {
+  [Authorize]
   [ApiController]
   [Route("api/[controller]")]
   public class SongController:ControllerBase
@@ -26,10 +28,7 @@ namespace back_end.Controllers
     [HttpGet("{songId}")]
     public async Task<ActionResult> GetSong(string songId){
       try
-      {
-        // TODO: remove this
-        songId = "5eb81f926b5b2659d790aca0";
-        
+      {        
         var song = await _songService.GetSongAsync(songId);
 
         return Ok(File(song.SongBytes, "application/octet-stream",$"{song.SongTitle}.mp3"));
@@ -76,6 +75,7 @@ namespace back_end.Controllers
       {
         var result = await _songService.EditSongTitleAsync(
           new Song{
+            Id = request.SongId,
             SongTitle = request.NewTitle
           });
 
@@ -104,7 +104,7 @@ namespace back_end.Controllers
     {
       try
       {
-        var result = await _songService.RemoveSongAsync(request.PlaylistId);
+        var result = await _songService.RemoveSongAsync(request.SongId);
 
         if(!result)
         {

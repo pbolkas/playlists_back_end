@@ -5,6 +5,6 @@ namespace back_end.Contracts.Requests.Song
   public class RemoveSongRequest
   {
     [Required]
-    public string PlaylistId {get;set;}
+    public string SongId {get;set;}
   }
 }
