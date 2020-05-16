@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using back_end.Entities;
 using back_end.Models;
@@ -14,6 +15,7 @@ namespace back_end.Services
     Task<bool> EditSongTitleAsync(Song s);
     Task<Song> GetSongAsync(string id);
     Task<bool> RemoveSongAsync(string id);
+    Task<bool> AddSongToPlaylistAsync(string id);
   }
 
   public class SongService : ISongService
@@ -90,6 +92,22 @@ namespace back_end.Services
       {
         _logger.LogCritical($"General exception on song edit title {e.Message}");
         return false;
+      }
+    }
+
+    public async Task<bool> AddSongToPlaylistAsync(string SongId,string PlaylistId)
+    {
+      try
+      {
+        var playlist = await _context.LoadRecordById<PlaylistModel>("collectionName", new Guid(PlaylistId));
+        
+        List<string> ids = playlist.SongIds;
+
+        var result = await _context.UpsertRecord<PlaylistModel>("collectionName",new Guid(PlaylistId),playlist);
+
+      }catch(Exception e)
+      {
+
       }
     }
   }
