@@ -53,12 +53,10 @@ namespace back_end.Controllers
         await _songService.AddSongAsync(new Song{
           SongBytes= bytes,
           SongTitle = request.SongTitle,
-        });
+        },request.PlaylistId);
 
-        // TODO: then write object id of song to the equivalent playlist
-        
         return Ok(new AddSongResponse{
-          result = $"Added Song {request.SongTitle} Successfully"
+          Result = $"Added Song {request.SongTitle} Successfully"
         });
       }
       catch(Exception e)
@@ -104,7 +102,7 @@ namespace back_end.Controllers
     {
       try
       {
-        var result = await _songService.RemoveSongAsync(request.SongId);
+        var result = await _songService.RemoveSongAsync(request.SongId, request.PlaylistId);
 
         if(!result)
         {
