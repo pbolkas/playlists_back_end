@@ -5,7 +5,6 @@ using back_end.Entities;
 using back_end.Models;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
-using MongoDB.Bson;
 
 namespace back_end.Services
 {
@@ -155,7 +154,7 @@ namespace back_end.Services
         {
           ids = new List<string>();
         }
-        ids.Add(playlistId);
+        ids.Add(songId);
         playlist.SongIds = ids;
         
         var result = await _context.UpsertRecord<PlaylistModel>("playlists",new Guid(playlistId), playlist);
