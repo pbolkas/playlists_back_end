@@ -87,7 +87,13 @@ namespace back_end.Controllers
 
         var result = await _playlistService.EditPlaylistName(playlist.NewTitle,new Guid(user_guid),new Guid(playlist.Id));
 
-        return Ok(result);
+        return Ok(
+          new EditPlaylistResponse
+          {
+            SongId = result.Id.ToString(),
+            NewTitle = result.Title
+          }
+        );
 
       }
       catch(Exception e)
@@ -106,7 +112,10 @@ namespace back_end.Controllers
 
         var result = await _playlistService.RemovePlaylist(new Guid(user_guid),new Guid(id));
 
-        return Ok("Removed playlist");
+        return Ok(
+        new RemovePlaylistResponse{
+          SongId = id
+        });
       }catch(Exception e)
       {
         _logger.LogCritical($"Exception {e.Message}");
@@ -122,7 +131,13 @@ namespace back_end.Controllers
         var user_guid = HttpContext.GetUserUUID();
         var result = await _playlistService.GetPlaylist(new Guid(user_guid),new Guid(id));
     
-        return Ok(result);
+        return Ok(
+          new GetPlaylistResponse{
+            Id = result.Id,
+            SongIds = result.SongIds,
+            Title = result.Title
+          }
+        );
       }
       catch(Exception e)
       {
