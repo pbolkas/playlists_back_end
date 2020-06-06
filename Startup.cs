@@ -21,7 +21,7 @@ namespace back_end
     {
 
         readonly string MyAllowSpecificOrigins = "_myAllowSpecificOrigins";
-
+        
         public Startup(IConfiguration configuration)
         {
             Configuration = configuration;
@@ -37,8 +37,9 @@ namespace back_end
                 options.AddPolicy(name: MyAllowSpecificOrigins,
                 builder => 
                 {
-                    builder.WithOrigins("*");
+                    builder.WithOrigins("*").AllowAnyHeader();
                 });
+                
             });
 
             services.InstallServicesInAssembly(Configuration);
