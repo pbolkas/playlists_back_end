@@ -26,7 +26,7 @@ namespace back_end.Controllers
     }
 
     [HttpPost]
-    public async Task<ActionResult> CreatePlaylist([FromBody] AddPlaylistRequest playlist)
+    public async Task<ActionResult<AddPlaylistResponse>> CreatePlaylist([FromBody] AddPlaylistRequest playlist)
     {
       try{
 
@@ -37,6 +37,7 @@ namespace back_end.Controllers
         return Ok(new AddPlaylistResponse{
           Id = result.Id,
           Title = result.Title,
+          SongIds = new List<string>()
         });
 
       }catch(Exception e)
