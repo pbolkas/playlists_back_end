@@ -13,6 +13,7 @@ namespace back_end.Services
     Task<Song> AddSongAsync(Song s,string playlistId);
     Task<bool> EditSongTitleAsync(Song s);
     Task<Song> GetSongAsync(string id);
+    Task<SongInfo> GetSongInfoAsync(string id);
     Task<bool> RemoveSongAsync(string songId, string playlistId);
   }
 
@@ -60,6 +61,24 @@ namespace back_end.Services
       catch(Exception e)
       {
         _logger.LogCritical($"General exception on song read {e.Message}");
+        return null;
+      }
+    }
+
+    public async Task<SongInfo> GetSongInfoAsync(string id)
+    {
+      try
+      {
+        var songInfo = await _context.FindFileInfoAsync(id);
+        
+        return new SongInfo{
+          Id = songInfo.Id.ToString(),
+          SongTitle = songInfo.Filename
+        };
+      }
+      catch(Exception e)
+      {
+        _logger.LogCritical($"General exception on song info read {e.Message}");
         return null;
       }
     }

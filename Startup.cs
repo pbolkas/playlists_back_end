@@ -37,7 +37,7 @@ namespace back_end
                 options.AddPolicy(name: MyAllowSpecificOrigins,
                 builder => 
                 {
-                    builder.WithOrigins("*").AllowAnyHeader();
+                    builder.WithOrigins("*").AllowAnyHeader().AllowAnyMethod();
                 });
                 
             });
