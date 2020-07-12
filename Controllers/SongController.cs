@@ -1,5 +1,8 @@
 using System;
 using System.IO;
+using System.Net;
+using System.Net.Http;
+using System.Net.Http.Headers;
 using System.Threading.Tasks;
 using back_end.Contracts.Requests.Song;
 using back_end.Contracts.Responses.Errors;
@@ -25,12 +28,13 @@ namespace back_end.Controllers
       _logger = logger;
     }
 
+    [AllowAnonymous]
     [HttpGet("{songId}")]
     public async Task<ActionResult> GetSong(string songId){
       try
       {        
         var song = await _songService.GetSongAsync(songId);
-
+        
         return Ok(File(song.SongBytes, "application/octet-stream",$"{song.SongTitle}.mp3"));
       }
       catch(Exception e)
