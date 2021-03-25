@@ -54,13 +54,14 @@ namespace back_end.Controllers
         var bytes = ms.ToArray();
 
         // first add song to gridfs
-        await _songService.AddSongAsync(new Song{
+        var result = await _songService.AddSongAsync(new Song{
           SongBytes= bytes,
           SongTitle = request.SongTitle,
         },request.PlaylistId);
 
         return Ok(new AddSongResponse{
-          Result = $"Added Song {request.SongTitle} Successfully"
+          SongId =  result.Id,
+          SongTitle = result.SongTitle
         });
       }
       catch(Exception e)

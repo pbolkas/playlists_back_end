@@ -5,6 +5,8 @@ namespace back_end.Contracts.Responses.Song
   public class AddSongResponse
   {
     [Required]
-    public string Result {get;set;}
+    public string SongTitle {get;set;}
+    [Required]
+    public string SongId {get;set;}
   }
 }
