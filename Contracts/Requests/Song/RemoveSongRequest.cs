@@ -6,5 +6,7 @@ namespace back_end.Contracts.Requests.Song
   {
     [Required]
     public string PlaylistId {get;set;}
+    [Required]
+    public string SongId {get;set;}
   }
 }

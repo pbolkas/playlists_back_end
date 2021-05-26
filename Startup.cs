@@ -19,6 +19,9 @@ namespace back_end
 {
     public class Startup
     {
+
+        readonly string MyAllowSpecificOrigins = "_myAllowSpecificOrigins";
+        
         public Startup(IConfiguration configuration)
         {
             Configuration = configuration;
@@ -29,7 +32,15 @@ namespace back_end
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddCors();
+            services.AddCors( options =>
+            {
+                options.AddPolicy(name: MyAllowSpecificOrigins,
+                builder => 
+                {
+                    builder.WithOrigins("*").AllowAnyHeader().AllowAnyMethod();
+                });
+                
+            });
 
             services.InstallServicesInAssembly(Configuration);
 
@@ -47,6 +58,8 @@ namespace back_end
             {
                 app.UseDeveloperExceptionPage();
             }
+
+            app.UseCors(MyAllowSpecificOrigins);
 
             app.UseHttpsRedirection();
 

@@ -9,6 +9,6 @@ namespace back_end.Models
     [BsonId]
     public Guid SongId{get;set;}
     public string Title {get;set;}
-    public IFormFile SongBytes {get;set;}
+    public byte[] SongBytes {get;set;}
   }
 }
