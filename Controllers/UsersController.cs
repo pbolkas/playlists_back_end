@@ -83,13 +83,6 @@ namespace back_end.Controllers
       }
     }
     
-    [AllowAnonymous]
-    [HttpGet("demo")]
-    public ActionResult Foo()
-    {
-      return Ok("bar");
-    }
-
     // [HttpPut("username")]
     // public Task<ActionResult> ChangeUsername([FromBody] UserUpdateUsernameRequest user)
     // {
