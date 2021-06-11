@@ -1,6 +1,6 @@
 namespace back_end.Helpers
 {
-  public class AppSettings
+  public class AuthenticationAppSettings
   {
     public string Secret {get;set;}
   }

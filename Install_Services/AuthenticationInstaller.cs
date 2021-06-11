@@ -16,9 +16,9 @@ namespace back_end.Install_Services
         public void InstallServices(IServiceCollection services, IConfiguration configuration)
         {
             var appSettingsSection = configuration.GetSection("AuthSettings");
-            services.Configure<AppSettings>(appSettingsSection);
+            services.Configure<AuthenticationAppSettings>(appSettingsSection);
 
-            var appSettings = appSettingsSection.Get<AppSettings>();
+            var appSettings = appSettingsSection.Get<AuthenticationAppSettings>();
             var key = Encoding.ASCII.GetBytes(appSettings.Secret);
 
             services.AddAuthentication(x =>

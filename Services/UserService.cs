@@ -27,9 +27,9 @@ namespace back_end.Services
   public class UserService : IUserService
   {
     private readonly MySQLContext _context;
-    private readonly AppSettings _appSettings;
+    private readonly AuthenticationAppSettings _appSettings;
     private readonly ILogger<UserService> _logger;
-    public UserService(MySQLContext context, IOptions<AppSettings> appSettings,ILogger<UserService> logger)
+    public UserService(MySQLContext context, IOptions<AuthenticationAppSettings> appSettings,ILogger<UserService> logger)
     {
       _context = context;
       _appSettings = appSettings.Value;
