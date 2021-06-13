@@ -1,0 +1,33 @@
+version: '3'
+
+services:
+
+  dotnetcore:
+    image: <image-path>:<tag>
+    ports:
+      - 80:80
+    env_file:
+      - local.env
+
+  mysql:
+    image: mysql:latest
+    ports: 
+      - 3306:3306
+    env_file: 
+      - local.env
+    volumes: 
+      - mysql-data:/home/mysql/data
+  
+  mongodb:
+    image: mongodb:latest
+    ports: 
+      - 27017:27017
+    env_file:
+      - local.env
+    volumes:
+      - mongo-data:/home/mongo/data
+
+  volumes:
+    mongo-data:
+    mysql-data:
+     
