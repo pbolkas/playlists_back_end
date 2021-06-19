@@ -50,12 +50,13 @@ namespace back_end.Controllers
     {
       try
       {
+        
         var ms = new MemoryStream();
         request.SongBytes.CopyTo(ms);
 
         if (FileOps.File.discardLargeFile(ms)) {
           return BadRequest( new Error {
-            ErrorDescription = @"File size must be less than 5 mb"
+            ErrorDescription = "File size must be less than 5 mb"
           });
         }
 

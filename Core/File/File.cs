@@ -1,5 +1,4 @@
 using System.IO;
-using NAudio;
 
 namespace back_end.Core.File
 {
@@ -8,8 +7,12 @@ namespace back_end.Core.File
     public static bool discardLargeFile(MemoryStream ms)
     {
       
+      if (ms.ToArray().Length >  (int) SizeEnum.MB5)
+      {
+        return true;
+      }
 
-      return true;
+      return false;
     }
 
   }
