@@ -33,7 +33,7 @@ namespace back_end.Services
       try
       {
         var songId = await _context.StoreFileAsync(s.SongTitle, s.SongBytes,null);
-        s.Id= songId.ToString();
+        s.Id = songId.ToString();
 
         var result = await AddSongToPlaylistAsync(s.Id,playlistId);
 
