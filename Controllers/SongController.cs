@@ -50,7 +50,7 @@ namespace back_end.Controllers
     {
       try
       {
-        
+
         var ms = new MemoryStream();
         request.SongBytes.CopyTo(ms);
 
@@ -62,7 +62,6 @@ namespace back_end.Controllers
 
         var bytes = ms.ToArray();
 
-        // first add song to gridfs
         var result = await _songService.AddSongAsync(new Song {
           SongBytes= bytes,
           SongTitle = request.SongTitle,
@@ -72,6 +71,7 @@ namespace back_end.Controllers
           SongId =  result.Id,
           SongTitle = result.SongTitle
         });
+
       }
       catch(Exception e)
       {
