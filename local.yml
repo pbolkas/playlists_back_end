@@ -5,7 +5,7 @@ services:
   dotnetcore:
     image: pbolkas/back_end:0.0.3
     ports:
-      - 80:80
+      - 8080:80
 
   mysql:
     image: mysql:latest
@@ -15,8 +15,7 @@ services:
       - local.env
     volumes:
     - my-datavolume:/var/lib/mysql
-    
-  
+
   mongodb:
     image: mongo:latest
     ports: 
