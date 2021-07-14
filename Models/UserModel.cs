@@ -31,6 +31,14 @@ namespace back_end.Models
     [Column("hash",TypeName = "varchar(255)")]
     public string Hash {get;set;}
 
+#nullable enable
+    [Column("verification_token", TypeName = "varchar(50)")]
+    public string? Token {get;set;}
+
+    [Column("email_verified")]
+    public bool? EmailConfirmed {get;set;}
+#nullable disable
+
     [Required]
     [Column("role",TypeName = "varchar(25)")]
     public string Role{get;set;}
