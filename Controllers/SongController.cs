@@ -12,6 +12,7 @@ using back_end.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
+using FileOps = back_end.Core.File ;
 
 namespace back_end.Controllers
 {
@@ -49,12 +50,19 @@ namespace back_end.Controllers
     {
       try
       {
+
         var ms = new MemoryStream();
         request.SongBytes.CopyTo(ms);
+
+        if (FileOps.File.discardLargeFile(ms)) {
+          return BadRequest( new Error {
+            ErrorDescription = "File size must be less than 5 mb"
+          });
+        }
+
         var bytes = ms.ToArray();
 
-        // first add song to gridfs
-        var result = await _songService.AddSongAsync(new Song{
+        var result = await _songService.AddSongAsync(new Song {
           SongBytes= bytes,
           SongTitle = request.SongTitle,
         },request.PlaylistId);
@@ -63,6 +71,7 @@ namespace back_end.Controllers
           SongId =  result.Id,
           SongTitle = result.SongTitle
         });
+
       }
       catch(Exception e)
       {
