@@ -11,6 +11,7 @@ using back_end.Contracts.Responses.User;
 using back_end.Models;
 using back_end.Entities;
 using back_end.Contracts.Responses.Errors;
+using System.Diagnostics.CodeAnalysis;
 
 namespace back_end.Controllers
 {
@@ -82,6 +83,13 @@ namespace back_end.Controllers
         return StatusCode(500);
       }
     }
+
+    // [AllowAnonymous]
+    // [HttpGet("verify/{verificationToken}", Name ="Email Verification")]
+    // public async Task<ActionResult> UserVerify([NotNull] string verificationToken)
+    // {
+
+    // }
     
     // [HttpPut("username")]
     // public Task<ActionResult> ChangeUsername([FromBody] UserUpdateUsernameRequest user)
