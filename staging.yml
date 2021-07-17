@@ -3,7 +3,7 @@ version: '3'
 services:
   
   dotnetcore:
-    image: 814311800761.dkr.ecr.us-east-2.amazonaws.com/playlists/back_end:latest
+    image: 814311800761.dkr.ecr.us-east-2.amazonaws.com/playlists:latest
     ports:
       - 80:80
     environment:
