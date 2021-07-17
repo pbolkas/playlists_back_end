@@ -1,26 +1,23 @@
 version: '3'
 
 services:
-
-  mysql:
-    image: mysql:latest
-    ports: 
-      - 3306:3306
-    env_file: 
-      - local.env
-    volumes: 
-      - mysql-data:/home/mysql/data
   
+  dotnetcore:
+    image: 814311800761.dkr.ecr.us-east-2.amazonaws.com/playlists/back_end:latest
+    ports:
+      - 80:80
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Staging
+
   mongodb:
     image: mongodb:latest
     ports: 
       - 27017:27017
     env_file:
-      - local.env
+      - staging.env
     volumes:
       - mongo-data:/home/mongo/data
 
   volumes:
     mongo-data:
-    mysql-data:
      

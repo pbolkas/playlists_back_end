@@ -6,17 +6,8 @@ services:
     image: <image-path>:<tag>
     ports:
       - 80:80
-    env_file:
-      - local.env
-
-  mysql:
-    image: mysql:latest
-    ports: 
-      - 3306:3306
-    env_file: 
-      - local.env
-    volumes: 
-      - mysql-data:/home/mysql/data
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Production
   
   mongodb:
     image: mongodb:latest
@@ -29,5 +20,4 @@ services:
 
   volumes:
     mongo-data:
-    mysql-data:
      
