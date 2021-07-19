@@ -32,7 +32,7 @@ namespace back_end.Models
     public string Hash {get;set;}
 
 #nullable enable
-    [Column("verification_token", TypeName = "varchar(50)")]
+    [Column("verification_token", TypeName = "varchar(90)")]
     public string? Token {get;set;}
 
     [Column("email_verified")]

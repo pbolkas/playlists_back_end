@@ -12,6 +12,7 @@ using back_end.Models;
 using back_end.Entities;
 using back_end.Contracts.Responses.Errors;
 using System.Diagnostics.CodeAnalysis;
+using back_end.Entities.Exceptions;
 
 namespace back_end.Controllers
 {
@@ -35,13 +36,31 @@ namespace back_end.Controllers
     public async Task<ActionResult> Login([FromBody]AuthenticateRequest UserCredentials)
     {
       
-      try{
+      try
+      {
 
         var u = await _userService.Authenticate(UserCredentials.Username, UserCredentials.Password);
 
-        return Ok(new AuthenticateResponse{Token=u.Token,Username=u.Username});
+        return Ok(new AuthenticateResponse{Token=u.Token, Username=u.Username});
         
-      }catch(Exception e)
+      }
+      catch(UserNotFoundException e)
+      {
+        return this.Problem(
+          e.Message,
+          null,
+          StatusCodes.Status404NotFound,
+          "Not found");
+      }
+      catch(UserInvalidCredentialsException e)
+      {
+        return this.Problem(
+          e.Message,
+          null,
+          StatusCodes.Status404NotFound,
+          "Not found");
+      }
+      catch(Exception e)
       {
         _logger.LogCritical($"Exception {e.Message}");
         return StatusCode(500);
@@ -84,12 +103,33 @@ namespace back_end.Controllers
       }
     }
 
-    // [AllowAnonymous]
-    // [HttpGet("verify/{verificationToken}", Name ="Email Verification")]
-    // public async Task<ActionResult> UserVerify([NotNull] string verificationToken)
-    // {
+    [AllowAnonymous]
+    [HttpGet("verify/{verificationToken}", Name ="Email Verification")]
+    public async Task<ActionResult> UserVerify([NotNull] string verificationToken)
+    {
+      try
+      {
+        var result = await _userService.EmailVerifyAsync(verificationToken);
 
-    // }
+        if(result is null)
+        {
+          return this.Problem(
+            "User not found",
+            null,
+            StatusCodes.Status404NotFound,
+            "Not found"
+          );
+        }
+
+        return Ok(new UserEmailVerified {Email = result.Email, Username = result.Username});
+
+      }catch(Exception e)
+      {
+        _logger.LogCritical($"Exception {e.Message}");
+        return StatusCode(500);
+      }
+
+    }
     
     // [HttpPut("username")]
     // public Task<ActionResult> ChangeUsername([FromBody] UserUpdateUsernameRequest user)
